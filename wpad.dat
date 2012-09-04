@@ -1,0 +1,46 @@
+//
+// Script WPAD
+// Criado por: @dcsobral, @jalexandre0, @gutocarvalho
+// 
+//
+// Copyright (C) <2011> <Guto Carvalho>,
+// <gutocarvalho@gmail.com>
+//
+
+// funcao para tratamento de url
+
+function FindProxyForURL(url, host) {
+
+	// contantes
+
+	var DIRETO = "DIRECT";
+	var PROXY_A = "PROXY proxy-a.empresa:3128";
+	var PROXY_B = "PROXY proxy-b.empresa:3128";
+	var resolved_ip = dnsResolve(host);
+
+
+	// se a url nao tem ponto, vou direto
+
+	if (isPlainHostName(host))
+		return "DIRECT";
+
+
+	// se o endereço ip do site solicitado resolver para ip interno, vou direto
+
+	if (isInNet(resolved_ip, "10.0.0.0", "255.0.0.0") ||
+		isInNet(resolved_ip, "172.16.0.0",  "255.240.0.0") ||
+		isInNet(resolved_ip, "192.168.0.0", "255.255.0.0") ||
+		isInNet(resolved_ip, "127.0.0.0", "255.0.0.0"))
+		return "DIRECT";
+
+
+	// verificando a origem para encaminhar para um proxy especifico
+
+	if (isInNet(myIpAddress(), "10.61.0.0", "255.255.0.0")) { return PROXY_A; };
+	if (isInNet(myIpAddress(), "172.16.0.0", "255.255.0.0")) { return PROXY_B; };
+
+
+	// retorno padrao caso nao case com nada acima
+
+	return PROXY_A;
+}
